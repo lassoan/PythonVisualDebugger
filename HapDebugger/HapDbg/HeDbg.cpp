@@ -434,11 +434,7 @@ tracer_callback(ProfilerObject *self, PyFrameObject *frame, int what,
 
 			if (g_bBptsSet)
 			{
-				const char* cszFilename = PyString_AsString(frame->f_code->co_filename);
-				const char* pFileOnly = strrchr(cszFilename, '\\');
-				if (pFileOnly)
-					cszFilename = pFileOnly+1;
-				
+        const char* cszFilename = he::getfilename(PyString_AsString(frame->f_code->co_filename));				
 				int line = PyCode_Addr2Line(frame->f_code, frame->f_lasti);
 				if (BreakBreakpoint(cszFilename, line))
 				{

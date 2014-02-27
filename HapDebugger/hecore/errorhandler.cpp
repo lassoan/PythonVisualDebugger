@@ -151,6 +151,20 @@ namespace HumongousEntertainment
 	}
 
 
+  const char* getfilename(const char* path)
+  {
+    const char* pFileOnly = strrchr(path, '\\');
+    if (pFileOnly==NULL)
+    {
+      // if backslash is not found as filename separator then also try slash
+      pFileOnly = strrchr(path, '/');
+    }
+    if (pFileOnly)
+    {
+      return pFileOnly+1;
+    }
+    return path;
+  }
 
 
 

@@ -17,6 +17,7 @@
 
 // Qt includes
 #include <QtPlugin>
+#include <QTimer>
 
 // PythonVisualDebugger Logic includes
 #include <vtkSlicerPythonVisualDebuggerLogic.h>
@@ -34,6 +35,10 @@ class qSlicerPythonVisualDebuggerModulePrivate
 {
 public:
   qSlicerPythonVisualDebuggerModulePrivate();
+  
+  // We use a timer-based polling mechanism to manage the socket communication from the main thread
+  // without blocking the main thread
+  QTimer RemoteConnectionHandlerTimer;
 };
 
 //-----------------------------------------------------------------------------
@@ -54,6 +59,9 @@ qSlicerPythonVisualDebuggerModule
   : Superclass(_parent)
   , d_ptr(new qSlicerPythonVisualDebuggerModulePrivate)
 {
+  Q_D(qSlicerPythonVisualDebuggerModule);
+  connect(&d->RemoteConnectionHandlerTimer, SIGNAL(timeout()), this, SLOT(handleRemoteConnections()));
+  d->RemoteConnectionHandlerTimer.start(1000);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,14 +78,14 @@ QString qSlicerPythonVisualDebuggerModule::helpText()const
 //-----------------------------------------------------------------------------
 QString qSlicerPythonVisualDebuggerModule::acknowledgementText()const
 {
-  return "This work was was partially funded by NIH grant 3P41RR013218-12S1";
+  return "This work was was partially funded by SparKit and OCAIRO";
 }
 
 //-----------------------------------------------------------------------------
 QStringList qSlicerPythonVisualDebuggerModule::contributors()const
 {
   QStringList moduleContributors;
-  moduleContributors << QString("Jean-Christophe Fillion-Robin (Kitware)");
+  moduleContributors << QString("Andras Lasso (PerkLab, Queen's)");
   return moduleContributors;
 }
 
@@ -90,7 +98,7 @@ QIcon qSlicerPythonVisualDebuggerModule::icon()const
 //-----------------------------------------------------------------------------
 QStringList qSlicerPythonVisualDebuggerModule::categories() const
 {
-  return QStringList() << "Examples";
+  return QStringList() << "Development";
 }
 
 //-----------------------------------------------------------------------------
@@ -116,4 +124,15 @@ qSlicerAbstractModuleRepresentation * qSlicerPythonVisualDebuggerModule
 vtkMRMLAbstractLogic* qSlicerPythonVisualDebuggerModule::createLogic()
 {
   return vtkSlicerPythonVisualDebuggerLogic::New();
+}
+
+//-----------------------------------------------------------------------------
+void qSlicerPythonVisualDebuggerModule::handleRemoteConnections()
+{
+  vtkMRMLAbstractLogic* l = this->logic();
+  vtkSlicerPythonVisualDebuggerLogic * pythonDebuggerLogic = vtkSlicerPythonVisualDebuggerLogic::SafeDownCast(l);
+  if (pythonDebuggerLogic)
+    {
+    pythonDebuggerLogic->HandleRemoteConnections();
+    }
 }

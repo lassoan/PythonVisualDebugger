@@ -40,11 +40,13 @@ vtkStandardNewMacro(vtkSlicerPythonVisualDebuggerLogic);
 //----------------------------------------------------------------------------
 vtkSlicerPythonVisualDebuggerLogic::vtkSlicerPythonVisualDebuggerLogic()
 {
+  this->ConnectedToRemoteDebugger=false;
 }
 
 //----------------------------------------------------------------------------
 vtkSlicerPythonVisualDebuggerLogic::~vtkSlicerPythonVisualDebuggerLogic()
 {
+  hapdbg::Uninitialize();
 }
 
 //----------------------------------------------------------------------------
@@ -61,6 +63,12 @@ void vtkSlicerPythonVisualDebuggerLogic::SetMRMLSceneInternal(vtkMRMLScene * new
   events->InsertNextValue(vtkMRMLScene::NodeRemovedEvent);
   events->InsertNextValue(vtkMRMLScene::EndBatchProcessEvent);
   this->SetAndObserveMRMLSceneEventsInternal(newScene, events.GetPointer());
+
+  int nPort = HE_DEBUGGER_PORTNUM;
+  if ( ! hapdbg::Initialize(nPort))
+  {
+    vtkErrorMacro("Failed to initialize Python visual debugger");		
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -89,8 +97,7 @@ void vtkSlicerPythonVisualDebuggerLogic
 
 
 //---------------------------------------------------------------------------
-void vtkSlicerPythonVisualDebuggerLogic
-::StartServer()
+void vtkSlicerPythonVisualDebuggerLogic::StartServer()
 {
 
   int nPort = HE_DEBUGGER_PORTNUM;
@@ -147,4 +154,25 @@ void vtkSlicerPythonVisualDebuggerLogic
   //cleanup python
   //Py_Finalize();
 
+}
+
+//---------------------------------------------------------------------------
+void vtkSlicerPythonVisualDebuggerLogic::HandleRemoteConnections()
+{
+  if (!hapdbg::HasConnection())
+  {
+    // no client is waiting to be connected, nothing to do
+    this->ConnectedToRemoteDebugger=false;
+    return;
+  }
+  if (this->ConnectedToRemoteDebugger)
+  {
+    // already connected, nothing to do
+    return;
+  }
+  this->ConnectedToRemoteDebugger=hapdbg::CheckForNewConnection();
+  if (this->ConnectedToRemoteDebugger)
+  {
+    vtkDebugMacro("Python visual debugger attached");
+  }
 }

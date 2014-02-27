@@ -198,7 +198,7 @@ int ProcessBreakStateMessages(PyFrameObject *frame)
 		if (g_DebugSocket.eGetState() != CHeDbgSocket::eSOCKSTATE_CONNECTED)
 		{
 			dprintf("Socket connection closed - quitting\n");
-			throw "Stopping Debugger";
+			//throw "Stopping Debugger";
 			return -1;
 		}
 		
@@ -266,13 +266,13 @@ int ProcessBreakStateMessages(PyFrameObject *frame)
 
 		case eMSG_STOP:
 			printf("Stopping Debugger\n");
-			throw "Stopping Debugger";
+			//throw "Stopping Debugger";
 			bRun = true;
 			break;
 
 		case eMSG_EXIT:
 			printf("Stopping Debugger\n");
-			throw "Stopping Debugger";
+			//throw "Stopping Debugger";
 			
 			g_bContinueRun = false;
 			bRun = true;

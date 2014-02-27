@@ -234,6 +234,8 @@ typedef	unsigned int uint32_t;
 std::string HECORECALLCONV stringprintf(char const *format, ...);
 std::string HECORECALLCONV vstringprintf(const char* format, va_list args);
 
+const char* HECORECALLCONV getfilename(const char* path);
+
 
 
 }	// End namespace HumongousEntertainment

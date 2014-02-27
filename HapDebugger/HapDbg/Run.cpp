@@ -83,7 +83,7 @@ int ProcessRunStateMessages()
 			break;
 		case eMSG_STOP:
 			printf("Stopping Debugger\n");
-			throw "Stopping Debugger";
+			//throw "Stopping Debugger";
 			//PyObject_CallMethod(g_pHeDebugger, "set_quit", NULL);
 
 			break;
@@ -92,7 +92,7 @@ int ProcessRunStateMessages()
 			g_bContinueRun = false;
 			printf("Stopping Debugger\n");
 			//PyObject_CallMethod(g_pHeDebugger, "set_quit", NULL);
-			throw "Stopping Debugger";
+			//throw "Stopping Debugger";
 			break;
 
 		case eMSG_PING:

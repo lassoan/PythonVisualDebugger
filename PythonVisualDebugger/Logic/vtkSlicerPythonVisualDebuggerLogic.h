@@ -47,6 +47,9 @@ public:
 
   void StartServer();
 
+  // If a remote debugger wants to connect then accept the connection
+  void HandleRemoteConnections();
+
 protected:
   vtkSlicerPythonVisualDebuggerLogic();
   virtual ~vtkSlicerPythonVisualDebuggerLogic();
@@ -57,6 +60,9 @@ protected:
   virtual void UpdateFromMRMLScene();
   virtual void OnMRMLSceneNodeAdded(vtkMRMLNode* node);
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
+
+  bool ConnectedToRemoteDebugger;
+
 private:
 
   vtkSlicerPythonVisualDebuggerLogic(const vtkSlicerPythonVisualDebuggerLogic&); // Not implemented

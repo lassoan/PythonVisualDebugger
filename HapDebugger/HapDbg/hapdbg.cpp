@@ -161,7 +161,7 @@ HAPDBG_API bool Initialize(int nPort)
 //
 HAPDBG_API bool HasConnection()
 {
-    return g_DebugSocket.eGetState() != CHeDbgSocket::eSOCKSTATE_LISTENING;
+  return g_DebugSocket.eGetState() != CHeDbgSocket::eSOCKSTATE_LISTENING;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -264,15 +264,8 @@ HAPDBG_API bool GetInitVals(string& cmdLine, string& workDir, string& cmdParms)
 //  Run a python script file
 //
 HAPDBG_API int RunPythonScript(const string& PythonScriptName)
-{
-	const char* pFileOnly = strrchr(PythonScriptName.c_str(), '\\');
-	if (pFileOnly)
-	{
-		pFileOnly++;
-		DebugProgPathname = pFileOnly;
-	}
-	else
-		DebugProgPathname = PythonScriptName;
+{	
+  DebugProgPathname = getfilename(PythonScriptName.c_str());
 
 	DebugProgPathname += ",";
 	DebugProgPathname += PythonScriptName;

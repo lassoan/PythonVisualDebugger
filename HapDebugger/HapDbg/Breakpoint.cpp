@@ -65,11 +65,7 @@ void CFileBreakpts::SetFilename(const char* cszFile)
 	
 	m_vecFilename.push_back(0);
 
-	char* pPathEnd = strrchr(&(m_vecFilename[0]), '\\');
-	if (pPathEnd)
-		m_FileNoPath = pPathEnd + 1;
-	else
-		m_FileNoPath = &(m_vecFilename[0]);
+	m_FileNoPath = (char*) getfilename(&(m_vecFilename[0]));
 }
 
 void CFileBreakpts::AddLine(uint32_t Line)

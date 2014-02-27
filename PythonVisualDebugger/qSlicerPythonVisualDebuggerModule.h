@@ -50,6 +50,10 @@ public:
   virtual QStringList categories()const;
   virtual QStringList dependencies() const;
 
+public slots:
+  void handleRemoteConnections();
+
+
 protected:
 
   /// Initialize the module. Register the volumes reader/writer

@@ -305,12 +305,15 @@ static const char *GetExceptionDescription(DWORD ExceptionCode)
 
 static char* GetFilePart(char *source)
 {
-	char *result = strrchr(source, '\\');
+  return (char*)he::getfilename(source);
+	/*
+  char *result = strrchr(source, '\\');
 	if (result)
 		result++;
 	else
 		result = source;
 	return result;
+  */
 }
 
 static int RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
@@ -331,12 +334,8 @@ bool HECORECALLCONV WriteMiniDump(HANDLE hProcess, DWORD processID, PMINIDUMP_EX
 	// of the client's process is a pain - it is very operating system dependent - and it's
 	// not clearly enough better to justify the hassle.
 	//(void)GetModuleFileNameEx(hProcess, 0, moduleName, MAX_PATH);
-	(void)GetModuleFileName(0, moduleName, MAX_PATH);
-	char* filePart = strrchr(moduleName, '\\');
-	if (filePart)
-		++filePart;
-	else
-		filePart = moduleName;
+	(void)GetModuleFileName(0, moduleName, MAX_PATH);  
+	char* filePart = (char*)getfilename(moduleName);
 	const char* const dbgHelpName = "dbghelp.dll";
 	strcpy(filePart, dbgHelpName);
 
@@ -375,11 +374,7 @@ bool HECORECALLCONV WriteMiniDump(HANDLE hProcess, DWORD processID, PMINIDUMP_EX
 	const int kMaxTries = 500;
 	char dumpFileName[kPaddedPathLength];
 	strcpy(dumpFileName, moduleName);
-	filePart = strrchr(dumpFileName, '\\');
-	if (filePart)
-		++filePart;
-	else
-		filePart = dumpFileName;
+	filePart = (char*)getfilename(dumpFileName);
 	for (int i = 1; i <= kMaxTries && INVALID_HANDLE_VALUE == outputFile; ++i)
 	{
 		sprintf(filePart, "errorlog%03d.dmp", i);

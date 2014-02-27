@@ -169,7 +169,7 @@ void CStackViewBar::FormatStackEntry(CString& StackEntry)
 		}
 		
 		int nEndPathInx = nCol1Inx;
-		while ((nEndPathInx > 0) && (StackEntry[nEndPathInx] != '\\'))
+		while ((nEndPathInx > 0) && (StackEntry[nEndPathInx] != '\\' && StackEntry[nEndPathInx] != '/'))
 			nEndPathInx--;
 		
 		if (nEndPathInx > 0)
