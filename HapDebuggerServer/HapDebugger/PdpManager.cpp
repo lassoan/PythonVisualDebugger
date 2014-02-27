@@ -38,7 +38,6 @@
 #include "stdafx.h"
 #include "PdpManager.h"
 #include "dbgRemote.h"
-#include "SourceControlInterface.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -52,7 +51,6 @@
 //=============================================================================
 CPdpManager::CPdpManager()
 {
-	m_pSCI = 0;
 	New();
 }
 //=============================================================================
@@ -70,12 +68,6 @@ string CPdpManager::Version()
 	return "1.0";
 }
 //=============================================================================
-
-CSourceControlInterface* CPdpManager::GetSci()
-{
-	return ((CDbgRemoteApp*)AfxGetApp())->GetSci();
-}
-
 
 
 static void StartElement(void* userData, const char* name, const char** attrs);
@@ -841,9 +833,6 @@ void CPdpManager::New()
 	m_GroupList.clear();
 
 	m_bFileIdentifierFound = false;
-	if (m_pSCI)
-		delete m_pSCI;
-	m_pSCI = 0;
 }
 //=============================================================================
 

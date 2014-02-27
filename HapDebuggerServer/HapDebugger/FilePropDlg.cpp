@@ -30,7 +30,6 @@
 #include "stdafx.h"
 #include "dbgremote.h"
 #include "FilePropDlg.h"
-#include "SourceControlInterface.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -121,22 +120,6 @@ void CFilePropDlg::ShowFileProperties(const char* filename)
 	if (fad.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
 	{
 		m_FileStatus += "hidden";
-	}
-
-	SScFileStatus stat = ((CDbgRemoteApp*)AfxGetApp())->GetSci()->GetFileStatus(FilePath.c_str()); 
-
-	if (stat.bControlled)
-	{
-		m_FileStatus += "scc: ";
-		if (stat.bOpenForEdit)
-			m_FileStatus += "open for edit ";
-		else
-			m_FileStatus += "in ";
-
-		if (stat.bNewerInSc)
-			m_FileStatus += "newer avail ";		
-		if (stat.bOpenByOther)
-			m_FileStatus += "open by other ";
 	}
 	
 	m_ModifiedDate = "";

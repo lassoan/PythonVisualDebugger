@@ -36,7 +36,6 @@
 #include "GotoLineDlg.h"
 #include "childfrm.h"
 
-#include "SourceControlInterface.h"
 #include "BrowseSelDlg.h"
 
 #include "scintilla\scintilla.h"
@@ -1951,9 +1950,6 @@ void TrimLine(char* szStr)
 	}
 }
 
-//#include <python.h>
-//#include <ceval.h>
-
 void CDbgRemoteView::AutoComplete()
 {
 #if 0 // this stuff just isn't ready for primetime
@@ -2336,44 +2332,14 @@ void CDbgRemoteView::OnAttemptModify()
 	if (GetDocument()->ReadOnly())
 	{
 		CString docFilename = GetDocument()->GetPathName();
-		CSourceControlInterface* psci = ((CDbgRemoteApp*)AfxGetApp())->GetSci();
-		if (psci && docFilename.GetLength())
+		if (docFilename.GetLength())
 		{
-			SScFileStatus stat = psci->GetFileStatus(docFilename);
-			if (stat.bControlled)
-			{
-				if (stat.bOpenForEdit == false)
-				{
-					string prompt = stringprintf("File is not opened for edit, check out file: %s?", docFilename);
-					if (IDYES == AfxMessageBox(prompt.c_str(), MB_YESNO))
-					{
-						bool reload = false;
-						if (stat.bNewerInSc)
-						{
-							if (IDYES == AfxMessageBox("A newer version is available, Sync first?", MB_YESNO))
-							{
-								psci->SyncFile(docFilename);
-								reload = true;
-							}
-						}
-						psci->CheckFileOut(docFilename);
-						
-						if (reload)
-							((CDbgRemoteApp*)AfxGetApp())->ReloadDocumentFile(docFilename);
-
-						((CDbgRemoteApp*)AfxGetApp())->UpdateFileStatus(docFilename);
-					}
-				}
-			}
-			else
-			{
-				if (IDYES == AfxMessageBox("File is read-only - change to readwrite?", MB_YESNO))
-				{
-					DWORD dwAttr = GetFileAttributes(docFilename);
-					dwAttr = dwAttr & (~FILE_ATTRIBUTE_READONLY);
-					SetFileAttributes(docFilename, dwAttr); 
-				}
-			}
+      if (IDYES == AfxMessageBox("File is read-only - change to readwrite?", MB_YESNO))
+      {
+        DWORD dwAttr = GetFileAttributes(docFilename);
+        dwAttr = dwAttr & (~FILE_ATTRIBUTE_READONLY);
+        SetFileAttributes(docFilename, dwAttr); 
+      }
 		}
 	}
 	

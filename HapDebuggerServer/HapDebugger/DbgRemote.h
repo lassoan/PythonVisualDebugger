@@ -41,7 +41,6 @@
 #include "tags.h"
 
 class CDbgRemoteView;
-class CSourceControlInterface;
 
 
 #define UM_SOCKETEVENT	WM_USER + 1010
@@ -104,8 +103,6 @@ public:
 	CPdpManager* pGetProject() {return &m_Project;}
 	void SaveProjectFile();
 
-	CSourceControlInterface* GetSci()	{return m_pSourceControl;}
-
 	void ReloadDocumentFile(const char* cszFilename);
 	void SaveDocumentFile(const char* cszFilename);
 	CDocument* GetDocumentFile(const char* cszFilename);
@@ -113,7 +110,6 @@ public:
 
 	void IgnoreFileChanges(bool bIgnore);
 	void FindInFiles(const char* cszFindText);
-	void UpdateFileStatus(const char* cszFilename);
 
 	const CTags* GetBrowseTags()const;
 	
@@ -154,15 +150,6 @@ protected:
 	
 	//the project manager object
 	CPdpManager m_Project;
-
-	//pointer to the source control interface object (virt base class)
-	CSourceControlInterface* m_pSourceControl;
-
-	bool m_bDebugClientAvailable;
-	string m_strDebugClientFile;
-
-	bool m_bReleaseClientAvailable;
-	string m_strReleaseClientFile;
 
 	bool m_bIgnoreFileChanges;
 
@@ -282,16 +269,10 @@ public:
 	afx_msg void OnDebugExecute();
 	afx_msg void OnUpdateDebugExecute(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateConfigureSourceControl(CCmdUI* pCmdUI);
-	afx_msg void OnConfigureSourceControl();
 	afx_msg void OnSourceControlRefresh();
-	afx_msg void OnUpdateSourceControlRefresh(CCmdUI* pCmdUI);
 	afx_msg void OnFileOpen();
 	afx_msg void OnWindowCloseAll();
 	afx_msg void OnToolsPythonInteractive();
-	afx_msg void OnDebugPyverDebug();
-	afx_msg void OnUpdateDebugPyverDebug(CCmdUI* pCmdUI);
-	afx_msg void OnDebugPyverRel();
-	afx_msg void OnUpdateDebugPyverRel(CCmdUI* pCmdUI);
 	afx_msg void OnToolsConfigure();
 	afx_msg void OnFileCloseProject();
 	afx_msg void OnUpdateFileCloseProject(CCmdUI* pCmdUI);

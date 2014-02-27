@@ -46,8 +46,6 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 #include <afxsock.h>
 
-#include <include/python.h>
-
 //include the header file containing useful macros and diagnostic stubs
 #include <ossinclude/ossinclude.h>
 
@@ -63,18 +61,12 @@ using namespace HumongousOpenSource;
 #pragma comment(lib,"expat.lib")
 #endif
 
-//link to python using the generic path
-#include <python.h>
-
 #else
 //include humongous diagnostics core library
 #include <hecore/hecore.h>
 #include <hecore/threadcore.h>
 #include <hecore/hestring.h>
 using namespace HumongousEntertainment;
-
-//link to python using the he standard relative path
-#include <include/python.h>
 
 #endif
 

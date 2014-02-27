@@ -51,7 +51,6 @@ IMPLEMENT_DYNCREATE(CDbgRemoteDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CDbgRemoteDoc, CDocument)
 	//{{AFX_MSG_MAP(CDbgRemoteDoc)
-	ON_COMMAND(ID_DEBUG_TESTCOMPILE, OnDebugTestCompile)
 	ON_COMMAND(ID_FILE_SAVE, OnFileSave)
 	//}}AFX_MSG_MAP
 	ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
@@ -466,117 +465,6 @@ string ApplicationDirectory()
 	}
 	return ModPath;
 }
-
-
-
-void CDbgRemoteDoc::OnDebugTestCompile() 
-{
-	CDbgRemoteApp* pApp = ((CDbgRemoteApp*)AfxGetApp());
-	
-	// connect to the view and get the editor buffer
-
-	char_vector editorData;
-
-	if (GetEditorText(editorData))
-	{
-		// strip carriage returns from editor buffer
-
-		char_vector::const_iterator itSrc = editorData.begin();
-		char_vector::iterator itDst = editorData.begin();
-
-		while (itSrc != editorData.end())
-		{
-			if (*itSrc != '\r')
-			{
-				*itDst++ = *itSrc;
-			}
-
-			++itSrc;
-		}
-
-		editorData.resize(itDst - editorData.begin());
-
-		CString PathName = GetPathName();
-		
-
-
-		Py_Initialize();
-		/*PyObject* pMainModule = PyImport_AddModule("__main__");
-		PyObject* FileNameObj = PyString_FromString(PathName);
-		PyObject_SetAttrString(pMainModule, "__file__", FileNameObj);
-		PyObject_SetAttrString(pMainModule, "__name__", FileNameObj);*/
-
-		char* pPath = (char*)((const char*)PathName);
-		PySys_SetArgv(1, &pPath);
-
-
-			
-		
-		pApp->AddTrace("Compiling File: ");
-		pApp->AddTrace(PathName);
-		pApp->AddTrace("\n");
-
-		string ErrLog = ApplicationDirectory();
-		ErrLog.append("\\BuildLog.txt");
-
-
-		// PyFile_FromFile only works if the Hap Debugger and Python are built with
-		// the same version of VC++ so that the FILE structure matches. This
-		// requirement is annoying so we avoid using PyFile_FromFile
-		bool useFILEObject = false;
-		FILE* ErrFile = NULL;
-		PyObject* pPyStdErr = NULL;
-		if (useFILEObject)
-		{
-			ErrFile = fopen(ErrLog.c_str(), "w+t");
-			assert(ErrFile);
-
-			pPyStdErr = PyFile_FromFile(ErrFile, "<stderr>", "w", NULL);
-			assert(pPyStdErr);
-			PySys_SetObject("stderr", pPyStdErr);
-		}
-		else
-		{
-			pPyStdErr = PyFile_FromString(const_cast<char*>(ErrLog.c_str()), "w");
-			assert(pPyStdErr);
-			PySys_SetObject("stderr", pPyStdErr);
-		}
-
-		//if (Py_CompileString(m_vectTextBuffer.begin(), (char*)((const char*)PathName), Py_file_input) == NULL)
-		if (Py_CompileString(&editorData[0], (char*)((const char*)PathName), Py_file_input) == NULL)
-		{
-			PyErr_Print();	
-			if (!useFILEObject)
-			{
-				// Clear the stderr object
-				PySys_SetObject("stderr", NULL);
-				Py_DECREF(pPyStdErr);
-				ErrFile = fopen(ErrLog.c_str(), "r");
-			}
-			
-			fflush(ErrFile);
-			fseek(ErrFile, 0, SEEK_END);
-			int Size = ftell(ErrFile);
-			rewind(ErrFile);
-				
-			string ErrBuff;
-			ErrBuff.resize(Size);
-			fread(&ErrBuff[0], 1, Size, ErrFile);
-
-			pApp->AddTrace(ErrBuff.c_str());
-		}
-		else
-		{
-			pApp->AddTrace("Compile Complete\n");
-		}
-		
-		Py_Finalize();
-		if (ErrFile)
-			fclose(ErrFile);
-	}
-}
-
-
 
 
 void CDbgRemoteDoc::StoreFileModTime(const char* cszFilePath)

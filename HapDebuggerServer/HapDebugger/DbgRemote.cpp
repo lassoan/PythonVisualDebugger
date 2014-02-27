@@ -37,7 +37,6 @@
 #include "DbgNetLib/HeDbgMsg.h"
 #include "OptionsDlg.h"
 #include "ProjectSettingsDlg.h"
-#include "SourceControlInterface.h"
 #include "DocSelectDlg.h"
 #include "ToolConfigDlg.h"
 #include "FileModifiedDlg.h"
@@ -86,8 +85,6 @@ BEGIN_MESSAGE_MAP(CDbgRemoteApp, CWinApp)
 	ON_UPDATE_COMMAND_UI(ID_DEBUG_BREAKNOW, OnUpdateDebugBreaknow)
 	ON_UPDATE_COMMAND_UI(ID_DEBUG_STOPDEBUGGING, OnUpdateDebugStopdebugging)
 	ON_COMMAND(ID_DEBUG_STOPDEBUGGING, OnDebugStopdebugging)
-	ON_COMMAND(ID_DEBUG_RUNDEBUGGER, OnDebugRundebugger)
-	ON_UPDATE_COMMAND_UI(ID_DEBUG_RUNDEBUGGER, OnUpdateDebugRundebugger)
 	ON_COMMAND(ID_DEBUG_STEPIN, OnDebugStepin)
 	ON_UPDATE_COMMAND_UI(ID_DEBUG_STEPIN, OnUpdateDebugStepin)
 	ON_COMMAND(ID_DEBUG_STEPOUT, OnDebugStepout)
@@ -118,16 +115,8 @@ BEGIN_MESSAGE_MAP(CDbgRemoteApp, CWinApp)
 	ON_UPDATE_COMMAND_UI(ID_FILE_MRU_PROJECT6, OnUpdateFileMruProject6)
 	ON_COMMAND(ID_DEBUG_EXECUTE, OnDebugExecute)
 	ON_UPDATE_COMMAND_UI(ID_DEBUG_EXECUTE, OnUpdateDebugExecute)
-	ON_UPDATE_COMMAND_UI(ID_PROJECT_SOURCECONTROL_CONFIGURE, OnUpdateConfigureSourceControl)
-	ON_COMMAND(ID_PROJECT_SOURCECONTROL_CONFIGURE, OnConfigureSourceControl)
-	ON_COMMAND(ID_PROJECT_SOURCECONTROL_REFRESHSTATUS, OnSourceControlRefresh)
-	ON_UPDATE_COMMAND_UI(ID_PROJECT_SOURCECONTROL_REFRESHSTATUS, OnUpdateSourceControlRefresh)
 	ON_COMMAND(ID_WINDOW_CLOSEALL, OnWindowCloseAll)
 	ON_COMMAND(ID_TOOLS_PYTHONINTERACTIVE, OnToolsPythonInteractive)
-	ON_COMMAND(ID_DEBUG_PYVER_DEBUG, OnDebugPyverDebug)
-	ON_UPDATE_COMMAND_UI(ID_DEBUG_PYVER_DEBUG, OnUpdateDebugPyverDebug)
-	ON_COMMAND(ID_DEBUG_PYVER_REL, OnDebugPyverRel)
-	ON_UPDATE_COMMAND_UI(ID_DEBUG_PYVER_REL, OnUpdateDebugPyverRel)
 	ON_COMMAND(ID_TOOLS_TOOLS_CONFIGURE, OnToolsConfigure)
 	ON_COMMAND(ID_FILE_CLOSEPROJECT, OnFileCloseProject)
 	ON_UPDATE_COMMAND_UI(ID_FILE_CLOSEPROJECT, OnUpdateFileCloseProject)
@@ -163,7 +152,6 @@ CDbgRemoteApp::CDbgRemoteApp()
 	m_uiSockCheckTimer = 0;
 	m_uiMemCheckTimer = 0;
 	m_pFindInFilesDlg = NULL;
-	m_pSourceControl = new CSourceControlInterface();
 	m_hDebuggerThread = 0;
 	m_bIgnoreFileChanges = false;
 }
@@ -272,13 +260,6 @@ BOOL CDbgRemoteApp::InitInstance()
 	
 	m_vecMessageBuffer.resize(512);
 
-	//initialize the source control interface dll
-	const char* SccDll = m_UserCfg.GetSccDll();
-	if (strlen(SccDll))
-	{
-		m_pSourceControl->Open(SccDll, m_pMainWnd->m_hWnd);
-	}
-
 	//optionally open the last project
 	if (m_UserCfg.GetOpenLastProj())
 	{
@@ -287,58 +268,7 @@ BOOL CDbgRemoteApp::InitInstance()
 
 	//set the current state to edit
 	m_CurState = eDBGSTATE_EDIT;
-
-	// Get the application directory. First get the application path.
-	char	appDir[MAX_PATH] = "";
-	(void)GetModuleFileName(0, appDir, NUMELEMENTS(appDir));
-	// Then remove the filename.
-	char* lastslash = strrchr(appDir, '\\');
-	if (lastslash)
-		lastslash[1] = 0;
-	string debugName = string(appDir) + cszDebugClientDbg;
-	//check for the presence of the HapClient app
-	HANDLE hDbgClient = CreateFile(debugName.c_str(), 0, FILE_SHARE_READ|FILE_SHARE_WRITE,
-		                           0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	m_bDebugClientAvailable = (hDbgClient != INVALID_HANDLE_VALUE);
-	if (m_bDebugClientAvailable)
-	{
-		//store the HapClient filename
-		m_strDebugClientFile = debugName;
-		CloseHandle(hDbgClient);
-	}
-
-	string releaseName = string(appDir) + cszDebugClientRel;
-	HANDLE hRelClient = CreateFile(releaseName.c_str(), 0, FILE_SHARE_READ|FILE_SHARE_WRITE,
-		                           0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	m_bReleaseClientAvailable = (hRelClient != INVALID_HANDLE_VALUE);
-	if (m_bReleaseClientAvailable)
-	{
-		//store the HapClient filename
-		m_strReleaseClientFile = releaseName;
-		CloseHandle(hRelClient);
-	}
 	
-	//set the version mode - according to what is available
-	if ((m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_RELEASE) && (m_bReleaseClientAvailable == false))
-		m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_DEBUG);
-
-	if ((m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_DEBUG) && (m_bDebugClientAvailable == false))
-		m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_RELEASE);
-	
-	if ((m_bDebugClientAvailable == false) && (m_bReleaseClientAvailable == false))
-	{
-		AfxMessageBox("HapClient not found - local debugging will be disabled.");
-		// need to report it.
-		m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_INVALID);
-	}
-	else if (m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_INVALID)
-	{
-		if (m_bReleaseClientAvailable)
-			m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_RELEASE);
-		else
-			m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_DEBUG);
-	}
-
 	return TRUE;
 }
 
@@ -373,11 +303,6 @@ int CDbgRemoteApp::ExitInstance()
 	m_hScintillaModule = NULL;
 
 	m_UserCfg.SaveUserCfg();
-
-	
-	if (m_pSourceControl)
-		delete m_pSourceControl;
-	m_pSourceControl = 0;
 
 	return CWinApp::ExitInstance();
 }
@@ -1329,16 +1254,6 @@ void CDbgRemoteApp::OnDebugRundebugger()
 	//load the run options
 	UpdateDefaultRunOptions();
 
-	if (m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_RELEASE)
-		m_DbgPathFile = m_strReleaseClientFile;
-	else if ((m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_DEBUG))
-		m_DbgPathFile = m_strDebugClientFile;
-	else
-	{
-		AfxMessageBox("No Debug Clients Available");
-		return;
-	}
-
 	if (m_UserCfg.GetLastPort() != HE_DEBUGGER_PORTNUM)
 	{
 		char buff[32];
@@ -1375,7 +1290,8 @@ void CDbgRemoteApp::OnDebugGo()
 	// if we are editing, go means run local
 	if (m_CurState == eDBGSTATE_EDIT)
 	{
-		OnDebugRundebugger();
+		//OnDebugRundebugger();
+    OnDebugConnect();
 	}
 	else if (m_CurState == eDBGSTATE_BREAK)
 	{
@@ -2587,67 +2503,6 @@ void CDbgRemoteApp::OnFileMruProject(UINT nID)
 	}
 }
 
-
-void CDbgRemoteApp::OnConfigureSourceControl() 
-{
-	vector<char>filenm;
-	filenm.resize(MAX_PATH);
-	strncpy(&(filenm[0]), m_UserCfg.GetSccDll(), MAX_PATH);
-
-	vector<char> filetitle;
-	filetitle.resize(MAX_PATH);
-	memset(&(filetitle[0]), 0, filetitle.size());
-	
-	OPENFILENAME ofn = {0};
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = m_pMainWnd->m_hWnd; 
-	ofn.hInstance = 0; 
-	ofn.lpstrFilter = "SCC DLL (*.dll)\0*.dll\0\0";
-	ofn.lpstrCustomFilter = 0; 
-	ofn.nMaxCustFilter = 0; 
-	ofn.nFilterIndex = 1; 
-	ofn.lpstrFile = &(filenm[0]); 
-	ofn.nMaxFile = filenm.size();
-	ofn.lpstrFileTitle = &(filetitle[0]); 
-	ofn.nMaxFileTitle = filetitle.size(); 
-	ofn.lpstrInitialDir = 0; 
-	ofn.lpstrTitle = "Version Control Interface"; 
-	ofn.Flags = OFN_FILEMUSTEXIST|OFN_HIDEREADONLY; 
-	ofn.nFileOffset = 0; 
-	ofn.nFileExtension = 0; 
-	ofn.lpstrDefExt = ""; 
-	ofn.lCustData = 0; 
-	ofn.lpfnHook = 0; 
-	ofn.lpTemplateName = 0;
-	
-	if (::GetOpenFileName(&ofn))
-	{
-		if (m_pSourceControl->Open(&(filenm[0])) )
-		{
-			m_UserCfg.SetSccDll(&(filenm[0]));
-		}
-		else
-			AfxMessageBox("Invalid Scc Dll specified");
-	}
-
-} // OnConfigureSourceControl
-
-void CDbgRemoteApp::OnUpdateConfigureSourceControl(CCmdUI* pCmdUI) 
-{
-}
-
-void CDbgRemoteApp::OnSourceControlRefresh() 
-{
-	CProjectViewBar* pProjWnd = ((CMainFrame*)m_pMainWnd)->pGetProjectViewBar();
-	assert(pProjWnd);
-	pProjWnd->UpdateProjectDisplay(&m_Project);
-}
-
-void CDbgRemoteApp::OnUpdateSourceControlRefresh(CCmdUI* pCmdUI) 
-{
-	pCmdUI->Enable(m_pSourceControl->IsOpen());
-}
-
 void CDbgRemoteApp::OnWindowCloseAll() 
 {
 	CloseAllDocuments(FALSE);
@@ -3086,29 +2941,6 @@ cleanup:
 	//delete [] tt;
 }	
 */
-void CDbgRemoteApp::OnDebugPyverDebug() 
-{
-	m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_DEBUG);
-}
-
-void CDbgRemoteApp::OnUpdateDebugPyverDebug(CCmdUI* pCmdUI) 
-{
-	pCmdUI->Enable((m_CurState == eDBGSTATE_EDIT) && (m_bDebugClientAvailable));
-	pCmdUI->SetCheck(m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_DEBUG);
-}
-
-void CDbgRemoteApp::OnDebugPyverRel() 
-{
-	m_UserCfg.SetPythonVersion(CUserCfg::ePYVER_RELEASE);
-}
-
-void CDbgRemoteApp::OnUpdateDebugPyverRel(CCmdUI* pCmdUI) 
-{
-	pCmdUI->Enable((m_CurState == eDBGSTATE_EDIT) && (m_bReleaseClientAvailable));
-	pCmdUI->SetCheck(m_UserCfg.GetPythonVersion() == CUserCfg::ePYVER_RELEASE);
-}
-
-
 
 void CDbgRemoteApp::OnFileCloseProject() 
 {
@@ -3257,7 +3089,6 @@ void CDbgRemoteApp::OnFileModified()
 					pCurDoc->OnOpenDocument(pCurDoc->GetFileName());
 				}
 				
-				UpdateFileStatus(pCurDoc->GetFileName());
 			}
 
 			if (DocPos)
@@ -3274,14 +3105,6 @@ void CDbgRemoteApp::IgnoreFileChanges(bool bIgnore)
 	m_bIgnoreFileChanges = bIgnore;
 }
 
-void CDbgRemoteApp::UpdateFileStatus(const char* cszFilename)
-{
-	CProjectViewBar* pProjWnd = ((CMainFrame*)m_pMainWnd)->pGetProjectViewBar();
-	assert(pProjWnd);
-
-	//pProjWnd->UpdateProjectDisplay(&m_Project);
-	pProjWnd->UpdateFileStatus(cszFilename, &m_Project);
-}
 BOOL CDbgRemoteApp::SaveAllModified()
 {
 	if (m_CurState != eDBGSTATE_EDIT)

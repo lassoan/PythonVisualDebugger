@@ -43,10 +43,7 @@ public:
 	enum { IDD = IDD_ABOUTBOX };
 	CString	m_BuildTime;
 	CString	m_Copywrite;
-	CString	m_PythonCopyright;
-	CString	m_PythonVersion;
 	CString	m_ProgVersion;
-	CString	m_PythonBuild;
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides

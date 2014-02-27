@@ -35,7 +35,6 @@
 
 #include "sizecbar.h"
 #include "scbarg.h"
-#include "SourceControlInterface.h"
 #include <set>
 
 
@@ -58,7 +57,6 @@ public:
 
 	void UpdateProjectDisplay(CPdpManager* pProject);
 	void UpdateProjectSettings(CPdpManager* pProject);
-	void UpdateFileStatus(const char* cszFile, CPdpManager* pProject);
 	
 protected:
 	CTreeCtrl m_ModuleTree;
@@ -82,7 +80,6 @@ protected:
 	struct SProjectItem
 	{
 		string strFilename;
-		SScFileStatus status;
 		bool   bBootFile;
 		string strGroup;
 		int nInx;
@@ -94,9 +91,6 @@ protected:
 	};
 
 	vector<SProjectItem> m_vecProjectItems;
-
-	SScFileStatus m_ProjectFileStatus;
-
 
 protected:
 
@@ -136,18 +130,12 @@ protected:
 	afx_msg void OnClose();
 	afx_msg void OnFilepopupSetBootFile();
 	afx_msg void OnFilepopupProperties();
-	afx_msg void OnFilepopupAddtoVcs();
-	afx_msg void OnFilepopupCheckin();
-	afx_msg void OnFilepopupCheckout();
-	afx_msg void OnFilepopupUndocheckout();
 	afx_msg void OnFilepopupSetGroup();
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnFilepopupExplorer();
 	afx_msg void OnFilepopupCmdprompt();
 	afx_msg void OnRemoveFromProject();
-	afx_msg void OnFilepopupDiffFile();
-	afx_msg void OnFilepopupSyncFile();
 	afx_msg void OnFilepopupFindinProject();
 	//}}AFX_MSG
 	afx_msg void OnDblclkTree(NMHDR* pNMHDR, LRESULT* pResult);

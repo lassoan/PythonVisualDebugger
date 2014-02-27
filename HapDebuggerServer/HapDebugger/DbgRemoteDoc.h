@@ -85,7 +85,6 @@ public:		// CDocument overrides
 protected:	// Generated message map functions
 
 	//{{AFX_MSG(CDbgRemoteDoc)
-	afx_msg void OnDebugTestCompile();
 	afx_msg void OnFileSave();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

@@ -67,7 +67,6 @@ public: // methods
 	void New();
 	bool HasChanged()const;
 
-	CSourceControlInterface* GetSci();
 	bool HasChangedOnDisk()const;
 
 private:

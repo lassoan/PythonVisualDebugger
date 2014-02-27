@@ -32,7 +32,6 @@
 #include "FilePropDlg.h"
 #include "FileGroup.h"
 #include "GroupPropertiesDlg.h"
-#include "SourceControlInterface.h"
 #include "FindInProjectDlg.h"
 
 
@@ -101,18 +100,12 @@ BEGIN_MESSAGE_MAP(CProjectViewBar, CSizingControlBar)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_FILEPOPUP_SETASBOOTFILE, OnFilepopupSetBootFile)
 	ON_COMMAND(ID_FILEPOPUP_PROPERTIES, OnFilepopupProperties)
-	ON_COMMAND(ID_FILEPOPUP_ADDTOVCS, OnFilepopupAddtoVcs)
-	ON_COMMAND(ID_FILEPOPUP_CHECKIN, OnFilepopupCheckin)
-	ON_COMMAND(ID_FILEPOPUP_CHECKOUT, OnFilepopupCheckout)
-	ON_COMMAND(ID_FILEPOPUP_UNDOCHECKOUT, OnFilepopupUndocheckout)
 	ON_COMMAND(ID_FILEPOPUP_GROUP, OnFilepopupSetGroup)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
 	ON_COMMAND(ID_FILEPOPUP_EXPLORER, OnFilepopupExplorer)
 	ON_COMMAND(ID_FILEPOPUP_CMDPROMPT, OnFilepopupCmdprompt)
 	ON_COMMAND(ID_FILEPOPUP_REMOVEFROMPROJECT, OnRemoveFromProject)
-	ON_COMMAND(ID_FILEPOPUP_DIFFFILE, OnFilepopupDiffFile)
-	ON_COMMAND(ID_FILEPOPUP_SYNCFILE, OnFilepopupSyncFile)
 	ON_COMMAND(ID_FILEPOPUP_FINDINPROJECT, OnFilepopupFindinProject)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -348,7 +341,6 @@ void CProjectViewBar::UpdateProjectDisplay(CPdpManager* pProject)
 
 	m_vecProjectItems.resize(0);
 	int FileCount = pProject->FileCount();
-	CSourceControlInterface* pSci = pProject->GetSci();
 	
 	string BootFile = pProject->BootFile();
 	string Path = pProject->GetProjectPath();
@@ -361,14 +353,6 @@ void CProjectViewBar::UpdateProjectDisplay(CPdpManager* pProject)
 		SProjectItem NewItem;
 		NewItem.strFilename = pProject->GetFileName(i);
 		string FilePath = pProject->GetFilePath(i);
-		if (!pSci)
-		{
-			NewItem.status.bControlled = false;
-		}
-		else
-		{
-			NewItem.status = pSci->GetFileStatus(FilePath.c_str());
-		}
 
 		NewItem.bBootFile = (BootFile == NewItem.strFilename);
 		NewItem.strGroup = pProject->GetFileGroup(NewItem.strFilename);
@@ -391,8 +375,6 @@ void CProjectViewBar::UpdateProjectDisplay(CPdpManager* pProject)
 	
 	string ProjPathFile = pProject->GetProjectPath();
 	ProjPathFile += pProject->GetProjectFile();
-
-	m_ProjectFileStatus = pSci->GetFileStatus(ProjPathFile.c_str());
 	
 	// Root node
 	HTREEITEM hProjRoot = m_ProjectTree.InsertItem(ProjectName.c_str(), IMAGEINX_PROJ_NOTVCD, IMAGEINX_PROJ_NOTVCD+1, TVI_ROOT, TVI_LAST);
@@ -542,30 +524,6 @@ void CProjectViewBar::UpdateProjectSettings(CPdpManager* pProject)
 	}
 } // UpdateProjectSettings
 
-void CProjectViewBar::UpdateFileStatus(const char* cszFile, CPdpManager* pProject)
-{
-	string srchStr = cszFile;
-	int pathEnd = srchStr.rfind('\\');
-	if (pathEnd > -1)
-	{
-		srchStr = srchStr.substr(pathEnd+1);
-	}
-	HTREEITEM hSrch = m_ProjectTree.GetRootItem();
-	HTREEITEM hMatch = FindFileInTree(hSrch, srchStr.c_str());
-	if (hMatch)
-	{	
-		int nInx = m_ProjectTree.GetItemData(hMatch);
-		CSourceControlInterface* pSci = pProject->GetSci();
-		if ((nInx > -1) && pSci)
-		{	
-			string AddFile = GetFilename(nInx);
-			m_vecProjectItems[nInx].status = pSci->GetFileStatus(AddFile.c_str());
-			UpdateFileItemStatus(hMatch);	
-		}
-	}
-}
-
-
 
 void CProjectViewBar::ShowModules()
 {
@@ -624,35 +582,7 @@ void CProjectViewBar::ShowProjectFileMenu()
 		pSubMenu->EnableMenuItem(ID_FILEPOPUP_GROUP, MF_BYCOMMAND|MF_GRAYED);
 		pSubMenu->EnableMenuItem(ID_FILEPOPUP_REMOVEFROMPROJECT, MF_BYCOMMAND|MF_GRAYED);		
 		pSubMenu->EnableMenuItem(ID_FILEPOPUP_EXPLORER, MF_BYCOMMAND|MF_GRAYED);
-		pSubMenu->EnableMenuItem(ID_FILEPOPUP_CMDPROMPT, MF_BYCOMMAND|MF_GRAYED);
-				
-		//BUGBUG - this could be enabled for the project file..
-		pSubMenu->EnableMenuItem(ID_FILEPOPUP_DIFFFILE, MF_BYCOMMAND|MF_GRAYED);
-		pSubMenu->EnableMenuItem(ID_FILEPOPUP_SYNCFILE, MF_BYCOMMAND|MF_GRAYED);
-
-		//if the project file is under vcs control, disable the add command
-		if (m_ProjectFileStatus.bControlled)
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_ADDTOVCS, MF_BYCOMMAND|MF_GRAYED);
-		else
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_ADDTOVCS, MF_BYCOMMAND|MF_ENABLED);
-
-		//if the project file is checked out
-		if (m_ProjectFileStatus.bOpenForEdit)
-		{
-			//disable check out
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKOUT, MF_BYCOMMAND|MF_GRAYED);
-			//enable check in and undo checkout
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_UNDOCHECKOUT, MF_BYCOMMAND|MF_ENABLED);
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKIN, MF_BYCOMMAND|MF_ENABLED);
-		}
-		else
-		{
-			//otherwise enable check out
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKOUT, MF_BYCOMMAND|MF_ENABLED);
-			//disable check in and undo checkout
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_UNDOCHECKOUT, MF_BYCOMMAND|MF_GRAYED);
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKIN, MF_BYCOMMAND|MF_GRAYED);
-		}
+		pSubMenu->EnableMenuItem(ID_FILEPOPUP_CMDPROMPT, MF_BYCOMMAND|MF_GRAYED);				
 	}
 	else
 	{
@@ -663,63 +593,6 @@ void CProjectViewBar::ShowProjectFileMenu()
 
 		m_SelectedFilename = m_vecProjectItems[nInx].strFilename;
 		
-		if (m_vecProjectItems[nInx].status.bControlled)
-		{
-			if (m_vecProjectItems[nInx].status.bOpenForEdit)
-			{
-				//disable check out
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKOUT, MF_BYCOMMAND|MF_GRAYED);
-				//enable check in
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKIN, MF_BYCOMMAND|MF_ENABLED);
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_UNDOCHECKOUT, MF_BYCOMMAND|MF_ENABLED);
-				//enable diff
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_DIFFFILE, MF_BYCOMMAND|MF_ENABLED);
-				//disable sync (must resync from sc)
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_SYNCFILE, MF_BYCOMMAND|MF_GRAYED);
-			}
-			else
-			{
-				//disable check in
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKIN, MF_BYCOMMAND|MF_GRAYED);
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_UNDOCHECKOUT, MF_BYCOMMAND|MF_GRAYED);
-
-				//enable check out
-				pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKOUT, MF_BYCOMMAND|MF_ENABLED);
-
-				if (m_vecProjectItems[nInx].status.bNewerInSc)
-				{
-					//disable diff
-					pSubMenu->EnableMenuItem(ID_FILEPOPUP_DIFFFILE, MF_BYCOMMAND|MF_GRAYED);
-					//enable sync (since the file isn't checked out)
-					pSubMenu->EnableMenuItem(ID_FILEPOPUP_SYNCFILE, MF_BYCOMMAND|MF_ENABLED);
-				}
-				else
-				{
-					//no sense in diffing - should match 
-					pSubMenu->EnableMenuItem(ID_FILEPOPUP_DIFFFILE, MF_BYCOMMAND|MF_GRAYED);
-					//no sense in syncing - should match 
-					pSubMenu->EnableMenuItem(ID_FILEPOPUP_SYNCFILE, MF_BYCOMMAND|MF_GRAYED);
-				}
-			}
-			
-			//disable add to vcs
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_ADDTOVCS, MF_BYCOMMAND|MF_GRAYED);
-		}
-		else
-		{
-			//gray checkin/checkout
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKIN, MF_BYCOMMAND|MF_GRAYED);
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_CHECKOUT, MF_BYCOMMAND|MF_GRAYED);
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_UNDOCHECKOUT, MF_BYCOMMAND|MF_GRAYED);
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_DIFFFILE, MF_BYCOMMAND|MF_GRAYED);
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_SYNCFILE, MF_BYCOMMAND|MF_GRAYED);
-
-			//enable add to vcs
-			pSubMenu->EnableMenuItem(ID_FILEPOPUP_ADDTOVCS, MF_BYCOMMAND|MF_ENABLED);
-
-			
-
-		}
 	}
 
 	// Display the shortcut menu. Track the right mouse 
@@ -860,68 +733,6 @@ void CProjectViewBar::OnFilepopupProperties()
 	}
 }
 
-void CProjectViewBar::OnFilepopupAddtoVcs() 
-{
-	CPdpManager* pProject = ((CDbgRemoteApp*)AfxGetApp())->pGetProject();
-	assert(pProject);
-	CSourceControlInterface* pSci = pProject->GetSci();
-	if (pSci)
-	{
-		HTREEITEM hSelItem = m_ProjectTree.GetSelectedItem();
-		if (hSelItem)
-		{		
-			int nInx = m_ProjectTree.GetItemData(hSelItem);
-			if (nInx > -1)
-			{
-				string AddFile = GetFilename(nInx);
-
-				((CDbgRemoteApp*)AfxGetApp())->SaveDocumentFile(AddFile.c_str());		
-				
-				pSci->AddFile(AddFile.c_str());
-
-				m_vecProjectItems[nInx].status = pSci->GetFileStatus(AddFile.c_str());
-				
-				UpdateFileItemStatus(hSelItem);
-			}
-			else
-			{
-				//project file
-			}
-		}
-	}
-}
-
-void CProjectViewBar::OnFilepopupCheckin() 
-{
-	CPdpManager* pProject = ((CDbgRemoteApp*)AfxGetApp())->pGetProject();
-	assert(pProject);
-	CSourceControlInterface* pSci = pProject->GetSci();
-	if (pSci)
-	{
-		HTREEITEM hSelItem = m_ProjectTree.GetSelectedItem();
-		if (hSelItem)
-		{		
-			int nInx = m_ProjectTree.GetItemData(hSelItem);
-			if (nInx > -1)
-			{
-				//string CheckFile = GetFilename(nInx);
-				string CheckFile = pProject->GetFilePath(m_vecProjectItems[nInx].nInx);
-
-				((CDbgRemoteApp*)AfxGetApp())->SaveDocumentFile(CheckFile.c_str());			
-				
-				pSci->CheckFileIn(CheckFile.c_str());
-
-				m_vecProjectItems[nInx].status = pSci->GetFileStatus(CheckFile.c_str());
-				
-				UpdateFileItemStatus(hSelItem);
-			}
-			else
-			{
-				//check in project file
-			}
-		}
-	}
-}
 
 //quick wildcard comparison code taken from www.codeproject.com
 int wildcmp(const char* wild, const char* string)
@@ -1047,19 +858,6 @@ void CProjectViewBar::UpdateFileItemStatus(HTREEITEM hItem)
 			FileImgInx = IMAGEINX_BATFILE_NOTVCD;
 		}
 
-		if (m_vecProjectItems[nInx].status.bControlled)
-		{
-			if (m_vecProjectItems[nInx].status.bOpenForEdit)
-				FileImgInx += 2;
-			else
-				FileImgInx += 1;
-		}
-
-		if (m_vecProjectItems[nInx].status.bNewerInSc)
-		{
-			FileImgInx += 2;
-		}
-
 		m_ProjectTree.SetItemImage(hItem, FileImgInx, FileImgInx);
 
 		if (m_vecProjectItems[nInx].bBootFile)
@@ -1072,147 +870,8 @@ void CProjectViewBar::UpdateFileItemStatus(HTREEITEM hItem)
 void CProjectViewBar::UpdateProjectItemStatus()
 {
 	int ProjImageInx = IMAGEINX_PROJ_NOTVCD;
-	if (m_ProjectFileStatus.bControlled)
-	{
-		if (m_ProjectFileStatus.bOpenForEdit)
-			ProjImageInx = IMAGEINX_PROJ_CHEKDOUT;
-		else
-			ProjImageInx = IMAGEINX_PROJ_CHEKDIN;
-	}
 	
 	m_ProjectTree.SetItemImage(m_ProjectTree.GetRootItem(), ProjImageInx, ProjImageInx+1);
-}
-
-void CProjectViewBar::OnFilepopupCheckout() 
-{
-	CPdpManager* pProject = ((CDbgRemoteApp*)AfxGetApp())->pGetProject();
-	assert(pProject);
-	CSourceControlInterface* pSci = pProject->GetSci();
-	if (pSci)
-	{
-		HTREEITEM hSelItem = m_ProjectTree.GetSelectedItem();
-		if (hSelItem)
-		{		
-			int nInx = m_ProjectTree.GetItemData(hSelItem);
-			if (nInx > -1)
-			{
-				//string CheckFile = pProject->GetProjectPath();
-				//CheckFile += m_vecProjectItems[nInx].strFilename;
-				string CheckFile = pProject->GetFilePath(m_vecProjectItems[nInx].nInx);
-
-				pSci->CheckFileOut(CheckFile.c_str());
-
-				m_vecProjectItems[nInx].status = pSci->GetFileStatus(CheckFile.c_str());
-				
-				UpdateFileItemStatus(hSelItem);
-			}
-			else
-			{
-				//check out the project file
-				string CheckProj = pProject->GetProjectPath();
-				CheckProj += pProject->GetProjectFile();
-				pSci->CheckFileOut(CheckProj.c_str());
-				m_ProjectFileStatus = pSci->GetFileStatus(CheckProj.c_str());
-				
-				UpdateProjectItemStatus();
-			}
-		}
-	}
-}
-
-void CProjectViewBar::OnFilepopupUndocheckout() 
-{
-	CPdpManager* pProject = ((CDbgRemoteApp*)AfxGetApp())->pGetProject();
-	assert(pProject);
-	CSourceControlInterface* pSci = pProject->GetSci();
-	if (pSci)
-	{
-		HTREEITEM hSelItem = m_ProjectTree.GetSelectedItem();
-		if (hSelItem)
-		{		
-			int nInx = m_ProjectTree.GetItemData(hSelItem);
-			if (nInx > -1)
-			{
-				//string CheckFile = GetFilename(nInx);
-				string CheckFile = pProject->GetFilePath(m_vecProjectItems[nInx].nInx);
-			
-				pSci->UndoCheckOut(CheckFile.c_str());
-
-				m_vecProjectItems[nInx].status = pSci->GetFileStatus(CheckFile.c_str());
-				
-				UpdateFileItemStatus(hSelItem);
-				
-				//reload the document file
-				((CDbgRemoteApp*)AfxGetApp())->ReloadDocumentFile(CheckFile.c_str());
-			}
-			else
-			{
-				//the user has selected the project file (or one of the groups)
-				//check out the project file
-				string CheckProj = pProject->GetProjectPath();
-				CheckProj += pProject->GetProjectFile();
-				pSci->UndoCheckOut(CheckProj.c_str());
-				m_ProjectFileStatus = pSci->GetFileStatus(CheckProj.c_str());
-				
-				//reload the project file
-				pProject->LoadFromFile(CheckProj.c_str());
-
-				UpdateProjectDisplay(pProject);
-			}
-		}
-	}
-}
-
-
-void CProjectViewBar::OnFilepopupDiffFile() 
-{
-	CPdpManager* pProject = ((CDbgRemoteApp*)AfxGetApp())->pGetProject();
-	assert(pProject);
-	CSourceControlInterface* pSci = pProject->GetSci();
-	if (pSci)
-	{
-		HTREEITEM hSelItem = m_ProjectTree.GetSelectedItem();
-		if (hSelItem)
-		{		
-			int nInx = m_ProjectTree.GetItemData(hSelItem);
-			if (nInx > -1)
-			{
-				//string CheckFile = GetFilename(nInx);
-				string CheckFile = pProject->GetFilePath(m_vecProjectItems[nInx].nInx);
-			
-				pSci->DiffFile(CheckFile.c_str());
-			}
-		}
-	}
-}
-
-void CProjectViewBar::OnFilepopupSyncFile() 
-{
-	CPdpManager* pProject = ((CDbgRemoteApp*)AfxGetApp())->pGetProject();
-	assert(pProject);
-	CSourceControlInterface* pSci = pProject->GetSci();
-	if (pSci)
-	{
-		HTREEITEM hSelItem = m_ProjectTree.GetSelectedItem();
-		if (hSelItem)
-		{		
-			int nInx = m_ProjectTree.GetItemData(hSelItem);
-			if (nInx > -1)
-			{
-				//string CheckFile = GetFilename(nInx);
-				string CheckFile = pProject->GetFilePath(m_vecProjectItems[nInx].nInx);
-			
-				pSci->SyncFile(CheckFile.c_str());
-
-				m_vecProjectItems[nInx].status = pSci->GetFileStatus(CheckFile.c_str());
-				
-				UpdateFileItemStatus(hSelItem);
-				
-				//reload the document file
-				((CDbgRemoteApp*)AfxGetApp())->ReloadDocumentFile(CheckFile.c_str());
-			}
-		}
-	}
 }
 
 

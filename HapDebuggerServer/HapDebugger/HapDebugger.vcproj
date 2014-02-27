@@ -145,7 +145,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="$(PYTHON_ROOT)\;..\;f:\S4Rw32qt484\python-install"
+				AdditionalIncludeDirectories="..\"
 				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -180,7 +180,7 @@
 				OutputFile="$(OutDir)/HapDebugger.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(PYTHON_ROOT)\libs;f:\S4Rw32qt484\python-install\libs"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/HapDebugger.pdb"
 				GenerateMapFile="true"
@@ -342,10 +342,6 @@
 			</File>
 			<File
 				RelativePath=".\scbarg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SourceControlInterface.cpp"
 				>
 			</File>
 			<File
@@ -534,19 +530,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SccGeneric.h"
-				>
-			</File>
-			<File
 				RelativePath=".\sizecbar.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\sizecbar.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SourceControlInterface.h"
 				>
 			</File>
 			<File

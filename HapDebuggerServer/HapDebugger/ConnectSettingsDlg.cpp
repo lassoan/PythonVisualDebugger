@@ -50,7 +50,6 @@ CConnectSettingsDlg::CConnectSettingsDlg(CWnd* pParent /*=NULL*/)
 	m_DebugScript = _T("");
 	//}}AFX_DATA_INIT
 	m_pConnectNames = NULL;
-	m_nConnectType = 0;
 }
 
 
@@ -66,28 +65,12 @@ void CConnectSettingsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CConnectSettingsDlg, CDialog)
 	//{{AFX_MSG_MAP(CConnectSettingsDlg)
-	ON_BN_CLICKED(IDC_LOCAL_RDO, OnLocalRdo)
-	ON_BN_CLICKED(IDC_REMOTE_RDO, OnRemoteRdo)
 	ON_BN_CLICKED(IDC_SETDBGSCRIPT_BTN, OnSetdbgscriptBtn)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CConnectSettingsDlg message handlers
-
-void CConnectSettingsDlg::OnLocalRdo() 
-{
-	m_nConnectType = 0;
-	GetDlgItem(IDC_REMOTENAME_STC)->EnableWindow(FALSE);
-	GetDlgItem(IDC_REMOTENAME_CBO)->EnableWindow(FALSE);
-}
-
-void CConnectSettingsDlg::OnRemoteRdo() 
-{
-	m_nConnectType = 1;
-	GetDlgItem(IDC_REMOTENAME_STC)->EnableWindow(m_nConnectType == 1);
-	GetDlgItem(IDC_REMOTENAME_CBO)->EnableWindow(m_nConnectType == 1);
-}
 
 void CConnectSettingsDlg::OnOK() 
 {
@@ -111,17 +94,6 @@ BOOL CConnectSettingsDlg::OnInitDialog()
 		pNamesCbo->SetWindowText(m_pConnectNames->at(0).c_str());
 		pNamesCbo->SelectString(0, m_pConnectNames->at(0).c_str());
 	}
-
-	if (m_nConnectType == 0)
-	{
-		CheckRadioButton(IDC_LOCAL_RDO, IDC_REMOTE_RDO, IDC_LOCAL_RDO);
-	}
-	else
-	{
-		CheckRadioButton(IDC_LOCAL_RDO, IDC_REMOTE_RDO, IDC_REMOTE_RDO);
-	}
-	GetDlgItem(IDC_REMOTENAME_STC)->EnableWindow(m_nConnectType == 1);
-	GetDlgItem(IDC_REMOTENAME_CBO)->EnableWindow(m_nConnectType == 1);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
