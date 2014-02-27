@@ -28,6 +28,7 @@
 #endif
 #endif  /* not defined XMLPARSEAPI */
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -9,6 +9,7 @@
 
 #include "winconfig.h"
 #define XMLPARSEAPI(type) type __cdecl
+//#define XMLPARSEAPI(type) type
 #include "expat.h"
 #undef XMLPARSEAPI
 

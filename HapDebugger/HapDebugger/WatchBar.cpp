@@ -27,6 +27,8 @@
 // WatchBar.cpp : implementation file
 //
 
+#include <tchar.h>
+
 #include "stdafx.h"
 #include "DbgRemote.h"
 #include "WatchBar.h"

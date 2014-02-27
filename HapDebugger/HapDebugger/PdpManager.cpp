@@ -43,6 +43,7 @@
 #include <fstream>
 #include <algorithm>
 
+#define XMLPARSEAPI(type) type __cdecl
 #include <expat/expat.h>
 
 //=============================================================================

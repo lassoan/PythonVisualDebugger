@@ -1315,7 +1315,7 @@ void CProjectViewBar::OnMouseMove(UINT nFlags, CPoint point)
 		// Note: It's important to do this AFTER the call to DragMove.
 		::SetCursor (htiTarget == NULL ?
 					 AfxGetApp ()->LoadStandardCursor (IDC_NO) :
-					 (HCURSOR) ::GetClassLong (m_hWnd, GCL_HCURSOR));
+					 (HCURSOR) ::GetClassLong (m_hWnd, GCLP_HCURSOR));
 
     } 
 	

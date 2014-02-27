@@ -36,8 +36,10 @@
 
 
 //scintilla control typedefs
-typedef unsigned long uptr_t;
-typedef long sptr_t;
+//typedef unsigned long uptr_t;
+typedef ULONG_PTR uptr_t;
+//typedef long sptr_t;
+typedef LONG_PTR sptr_t;
 //scintilla control function typedef
 typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 

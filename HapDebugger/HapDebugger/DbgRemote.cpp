@@ -203,7 +203,8 @@ BOOL CDbgRemoteApp::InitInstance()
 	m_UserCfg.LoadUserCfg();
 
 	//load the scintilla dll
-	if (m_hScintillaModule == NULL)
+	
+  if (m_hScintillaModule == NULL)
 	{
 #ifdef _DEBUG
 		const char* scintillaName = "Scintilla_d.dll";
@@ -223,7 +224,7 @@ BOOL CDbgRemoteApp::InitInstance()
 			AfxMessageBox(message.c_str(), MB_OK | MB_ICONERROR);
 			return FALSE;
 		}
-	}
+	}  
 
 
 	// Register the application's document templates.  Document templates
@@ -1016,8 +1017,8 @@ unsigned int __stdcall CDbgRemoteApp::AdvancedDebuggerThreadFn(void* pParam)
 				// GetModuleFileNameEx, but it still doesn't always work. It can fail
 				// on early loads.
 				char* ptr;
-				DWORD bytesToRead = sizeof(ptr);
-				DWORD bytesRead;
+				SIZE_T bytesToRead = sizeof(ptr);
+				SIZE_T bytesRead;
 				if (ReadProcessMemory(pApp->m_DbgProcessInfo.hProcess, pImageName,
 					                  &ptr, bytesToRead, &bytesRead) && bytesRead == bytesToRead)
 				{

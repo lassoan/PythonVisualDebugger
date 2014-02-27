@@ -33,9 +33,15 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#define WINVER  0x0601
+
 #pragma warning(disable:4786)
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
+
+
+#include <tchar.h>
+//#include <../../VC/include/tchar.h> // Workaround for avoiding the use of the file with same name in DCMTK
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
@@ -46,7 +52,30 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 #include <afxsock.h>
 
-#include <include/python.h>
+//#include <include/python.h>
+
+/*
+   Use the "documented" trick involving checking for _DEBUG
+   and undefined that symbol while we include Python headers.
+   Update: this method does not fool Microsoft Visual C++ 8 anymore; two
+   of its header files (crtdefs.h and use_ansi.h) check if _DEBUG was set
+   or not, and set flags accordingly (_CRT_MANIFEST_RETAIL,
+   _CRT_MANIFEST_DEBUG, _CRT_MANIFEST_INCONSISTENT). The next time the
+   check is performed in the same compilation unit, and the flags are found,
+   and error is triggered. Let's prevent that by setting _CRT_NOFORCE_MANIFEST.
+*/
+
+#ifdef _DEBUG
+# undef _DEBUG
+# if defined(_MSC_VER) && _MSC_VER >= 1400
+#   define _CRT_NOFORCE_MANIFEST 1
+# endif
+# include <Python.h>
+# define _DEBUG
+#else
+# include <Python.h>
+#endif  
+
 
 //include the header file containing useful macros and diagnostic stubs
 #include <ossinclude/ossinclude.h>
