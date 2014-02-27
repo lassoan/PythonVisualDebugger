@@ -397,6 +397,13 @@ static int
 tracer_callback(ProfilerObject *self, PyFrameObject *frame, int what,
                 PyObject *arg)
 {
+  // Prevent processing of traces if no debugger client is connected
+  // (processing caused problems on application startup in other Python modules)
+  if (g_DebugSocket.eGetState()==CHeDbgSocket::eSOCKSTATE_NONE || g_DebugSocket.eGetState()==CHeDbgSocket::eSOCKSTATE_LISTENING)
+  {
+    return 0;
+  }
+
 	//if (what != PyTrace_EXCEPTION)
 	//	++lineExecutedSinceExcept;
 
