@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.9)
 
-project(LoadableExtensionTemplate)
+project(PythonVisualDebugger)
 
 #-----------------------------------------------------------------------------
 set(EXTENSION_HOMEPAGE "http://www.slicer.org/slicerWiki/index.php/Documentation/4.3/Extensions/LoadableExtensionTemplate")
@@ -14,7 +14,10 @@ set(EXTENSION_SCREENSHOTURLS "http://wiki.slicer.org/slicerWiki/images/4/42/Slic
 find_package(Slicer REQUIRED)
 include(${Slicer_USE_FILE})
 
+SET(HapDebugger_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/HapDebugger)
+
 #-----------------------------------------------------------------------------
+add_subdirectory(HapDebugger)
 add_subdirectory(PythonVisualDebugger)
 
 #-----------------------------------------------------------------------------

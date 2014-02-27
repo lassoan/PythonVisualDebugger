@@ -169,7 +169,7 @@ bool HECORECALLCONV heassert(const char* expr, const char* filename, unsigned in
 		// trigger an assert inside of a timing message you will probably never
 		// see it - especially if you are single stepping through the code,
 		dprintf("Nested assert - this is very bad!!!\n");
-		HEDEBUG_BREAK();
+		//HEDEBUG_BREAK();
 		return Result;
 	}
 	AlreadyHere = true;

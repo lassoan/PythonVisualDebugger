@@ -88,7 +88,7 @@ void HECORECALLCONV HEInitializeLibrary();
 // into the assert.c source file, instead of into your own source code.
 // This assert macro fixes these problems.
 // Define this if you don't want the fixed assert dialogs.
-//#define	USEDEFAULTASSERTDEF
+#define	USEDEFAULTASSERTDEF
 #ifdef	VK_CUBE
 	// Viskit already defines a nice assert for Game Cube - thanks to David Galloway
 	#define	USEDEFAULTASSERTDEF

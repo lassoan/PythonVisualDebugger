@@ -547,7 +547,7 @@ void SendModules()
 	PyObject* pImportDict = PyImport_GetModuleDict();
 	
 	PyObject *key, *value;
-	int pos = 0;
+	Py_ssize_t pos = 0;
 	while (PyDict_Next(pImportDict, &pos, &key, &value)) 
 	{		
 		//dprintf("Module:  %s - %s\n", PyString_AsString(PyObject_Str(key)), PyString_AsString(PyObject_Str(PyObject_Type(value))) );

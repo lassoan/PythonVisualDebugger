@@ -45,6 +45,8 @@ public:
   vtkTypeMacro(vtkSlicerPythonVisualDebuggerLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  void StartServer();
+
 protected:
   vtkSlicerPythonVisualDebuggerLogic();
   virtual ~vtkSlicerPythonVisualDebuggerLogic();

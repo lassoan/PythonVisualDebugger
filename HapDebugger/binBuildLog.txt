@@ -1,5 +1,0 @@
-  File "C:\bin\scanpackages.py", line 9
-    delete hello
-               ^
-SyntaxError: invalid syntax
-tax

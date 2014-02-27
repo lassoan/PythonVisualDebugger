@@ -21,20 +21,37 @@
 // SlicerQt includes
 #include "qSlicerPythonVisualDebuggerModuleWidget.h"
 #include "ui_qSlicerPythonVisualDebuggerModuleWidget.h"
+#include "vtkSlicerPythonVisualDebuggerLogic.h"
 
 //-----------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_ExtensionTemplate
 class qSlicerPythonVisualDebuggerModuleWidgetPrivate: public Ui_qSlicerPythonVisualDebuggerModuleWidget
 {
+  Q_DECLARE_PUBLIC( qSlicerPythonVisualDebuggerModuleWidget );  
+
+protected:
+  qSlicerPythonVisualDebuggerModuleWidget* const q_ptr;
 public:
-  qSlicerPythonVisualDebuggerModuleWidgetPrivate();
+  qSlicerPythonVisualDebuggerModuleWidgetPrivate( qSlicerPythonVisualDebuggerModuleWidget& object );
+  ~qSlicerPythonVisualDebuggerModuleWidgetPrivate();
+ 
+  vtkSlicerPythonVisualDebuggerLogic* logic() const
+  {
+    Q_Q( const qSlicerPythonVisualDebuggerModuleWidget );
+    return vtkSlicerPythonVisualDebuggerLogic::SafeDownCast( q->logic() );
+  } 
 };
 
 //-----------------------------------------------------------------------------
 // qSlicerPythonVisualDebuggerModuleWidgetPrivate methods
 
 //-----------------------------------------------------------------------------
-qSlicerPythonVisualDebuggerModuleWidgetPrivate::qSlicerPythonVisualDebuggerModuleWidgetPrivate()
+qSlicerPythonVisualDebuggerModuleWidgetPrivate::qSlicerPythonVisualDebuggerModuleWidgetPrivate( qSlicerPythonVisualDebuggerModuleWidget& object ) : q_ptr(&object)
+{
+}
+
+//-----------------------------------------------------------------------------
+qSlicerPythonVisualDebuggerModuleWidgetPrivate::~qSlicerPythonVisualDebuggerModuleWidgetPrivate()
 {
 }
 
@@ -44,7 +61,7 @@ qSlicerPythonVisualDebuggerModuleWidgetPrivate::qSlicerPythonVisualDebuggerModul
 //-----------------------------------------------------------------------------
 qSlicerPythonVisualDebuggerModuleWidget::qSlicerPythonVisualDebuggerModuleWidget(QWidget* _parent)
   : Superclass( _parent )
-  , d_ptr( new qSlicerPythonVisualDebuggerModuleWidgetPrivate )
+  , d_ptr( new qSlicerPythonVisualDebuggerModuleWidgetPrivate(*this))
 {
 }
 
@@ -59,5 +76,14 @@ void qSlicerPythonVisualDebuggerModuleWidget::setup()
   Q_D(qSlicerPythonVisualDebuggerModuleWidget);
   d->setupUi(this);
   this->Superclass::setup();
+
+  connect( d->PushButton_StartServer, SIGNAL( clicked() ), this, SLOT( onStartServerButtonClicked() ) );
 }
 
+//-----------------------------------------------------------------------------
+void qSlicerPythonVisualDebuggerModuleWidget::onStartServerButtonClicked()
+{
+  Q_D(qSlicerPythonVisualDebuggerModuleWidget);
+  qCritical() << "qSlicerPythonVisualDebuggerModuleWidget::onStartServerButtonClicked() called"; 
+  d->logic()->StartServer(); 
+}

@@ -40,6 +40,7 @@ public:
 
 public slots:
 
+  void onStartServerButtonClicked();
 
 protected:
   QScopedPointer<qSlicerPythonVisualDebuggerModuleWidgetPrivate> d_ptr;

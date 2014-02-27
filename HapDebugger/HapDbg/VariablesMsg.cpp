@@ -68,12 +68,13 @@ bool CVariablesMsg::IsDebugObject(PyObject *pKey)
 
 void CVariablesMsg::FormatLocalsDict(PyObject* pLocals)
 {
-	int pos = 0;
+	Py_ssize_t pos = 0;
 	PyObject *key, *value;
 	
 	m_msg.resize(0);
 	
-	while (PyDict_Next(pLocals, &pos, &key, &value)) 
+	//while (PyDict_Next(pLocals, &pos, &key, &value)) 
+  while (PyDict_Next(pLocals, &pos, &key, &value)) 
 	{
 		//dprintf("Local: %s - %s\n", PyString_AsString(PyObject_Str(key)), PyString_AsString(PyObject_Str(PyObject_Type(value))) );
 
@@ -105,7 +106,7 @@ void CVariablesMsg::FormatGlobalsDict(PyObject* pGlobals)
 {
 	m_msg.resize(0);
 
-	int pos = 0;
+	Py_ssize_t pos = 0;
 	PyObject *key, *value;
 	
 	while (PyDict_Next(pGlobals, &pos, &key, &value)) 

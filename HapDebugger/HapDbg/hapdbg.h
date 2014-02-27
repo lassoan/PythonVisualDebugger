@@ -33,11 +33,15 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // HAPDBG_API functions as being imported from a DLL, wheras this DLL sees symbols
 // defined with this macro as being exported.
+/*
 #ifdef HAPDBG_EXPORTS
 #define HAPDBG_API __declspec(dllexport)
 #else
 #define HAPDBG_API __declspec(dllimport)
 #endif
+*/
+
+#define HAPDBG_API 
 
 //-----------------------------------------------------------------------------
 // Socket default port number
@@ -64,16 +68,16 @@ namespace hapdbg
 	HAPDBG_API void Uninitialize();
 
 	//get the value of a Hap specified debugging option
-	HAPDBG_API bool GetOption(const string& optName, string& optVal);
+  HAPDBG_API bool GetOption(const std::string& optName, std::string& optVal);
 
 	//get the values sent with the init function
-	HAPDBG_API bool GetInitVals(string& cmdLine, string& workDir, string& cmdParms);
+  HAPDBG_API bool GetInitVals(std::string& cmdLine, std::string& workDir, std::string& cmdParms);
 
 	//run a python script
-	HAPDBG_API int RunPythonScript(const string& pyScriptFileName);
+	HAPDBG_API int RunPythonScript(const std::string& pyScriptFileName);
 	
 	//set the python command line args.
-	HAPDBG_API void SetPythonArguments(string& strParams, string& strScript);
+	HAPDBG_API void SetPythonArguments(std::string& strParams, std::string& strScript);
 }
 
 

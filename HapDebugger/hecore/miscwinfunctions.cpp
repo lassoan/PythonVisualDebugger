@@ -264,30 +264,8 @@ static const char* GetLinkDate(unsigned int ModuleAddress)
 {
 	static char	datebuffer[100];
 
-#ifdef	WIN32
-
-	PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)ModuleAddress;	// Read the DOS header.
-	assert(dosHeader->e_magic == IMAGE_DOS_SIGNATURE);
-	
-	// Skip to the NT header.
-	PIMAGE_NT_HEADERS pNTHeader = PIMAGE_NT_HEADERS((char *)dosHeader + dosHeader->e_lfanew);
-	
-	// The time stamp for an image indicates the date and time that the image was created by the
-	// Win32 linker. The value is represented in the number of seconds elapsed since midnight
-	// (00:00:00), January 1, 1970, Universal Coordinated Time, according to the system clock.
-	// The time stamp can be printed using the C run-time (CRT) function ctime or equivalent.
-	struct tm LinkTime = *localtime((time_t *)(&pNTHeader->FileHeader.TimeDateStamp));
-	
-	//sprintf(datebuffer, "UTC link time: %08lx - %s", pNTHeader->FileHeader.TimeDateStamp, asctime(&LinkTime));
-	sprintf(datebuffer, "%s", asctime(&LinkTime));
-	
-	assert(strlen(datebuffer) > 0);
-	datebuffer[strlen(datebuffer) - 1] = 0;	// Knock off the terminating \n character.
-
-#else
 	// This method of getting the build date gets compile date for this file.
 	strcpy(datebuffer, __DATE__ " " __TIME__);
-#endif
 
 	return datebuffer;
 
@@ -309,32 +287,8 @@ static const char* GetLinkDate(unsigned int ModuleAddress)
 ///////////////////////////////////////////////////////////////////////////////
 const char* GetDllLinkDate()
 {
-#ifdef	WIN32
-	unsigned int uiCodePtr = 0;
-
-	//a little assembly to get a pointer to some code - if this library
-	//becomes a dll, this function needs to be inline allowing to get
-	//the base address of the dll that is using this function.
-
-	__asm
-	{
-CODE_PTR_LABEL:
-		lea EAX, CODE_PTR_LABEL		//load the address of the label into EAX
-		mov uiCodePtr, EAX			//store the address into uiCodePtr
-	}
-
-	//Using the code ptr, get the allocation base - this is the same as the 
-	//HMODULE and is also the location of the PIMAGE_DOS_HEADER in memory
-	//which we can use to extract the link date.
-	
-	MEMORY_BASIC_INFORMATION mbi;
-	VirtualQuery((const void*)uiCodePtr, &mbi, sizeof(mbi));
-	return GetLinkDate((unsigned int) mbi.AllocationBase);
-
-#else
 	//non win32, just use the __DATE__ and __TIME__ macros
 	return GetLinkDate(0);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
