@@ -10,8 +10,8 @@ set(EXTENSION_DESCRIPTION "This is an example of extension bundling a loadable m
 set(EXTENSION_ICONURL "http://viewvc.slicer.org/viewvc.cgi/Slicer4/trunk/Extensions/Testing/LoadableExtensionTemplate/LoadableExtensionTemplate.png?revision=21746&view=co")
 set(EXTENSION_SCREENSHOTURLS "http://wiki.slicer.org/slicerWiki/images/4/42/Slicer-r19441-LoadableExtensionTemplate-screenshot.png")
 
-SET(HapDebugger_HOME ${CMAKE_CURRENT_SOURCE_DIR}/HapDebugger)
-add_subdirectory(HapDebugger)
+SET(HapDebugger_HOME ${CMAKE_CURRENT_SOURCE_DIR}/HapDebuggerClient)
+add_subdirectory(HapDebuggerClient)
 
 #-----------------------------------------------------------------------------
 find_package(Slicer REQUIRED)
