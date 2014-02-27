@@ -97,62 +97,8 @@ void vtkSlicerPythonVisualDebuggerLogic
 
 
 //---------------------------------------------------------------------------
-void vtkSlicerPythonVisualDebuggerLogic::StartServer()
+void vtkSlicerPythonVisualDebuggerLogic::Test()
 {
-
-  int nPort = HE_DEBUGGER_PORTNUM;
-
-  //initialize python
-  //Py_Initialize();
-
-  if ( ! hapdbg::Initialize(nPort))
-  {
-    printf("Failed to initialize hapdbg");		
-  }
-
-  try	
-  {
-    if (hapdbg::WaitForConnection())
-    {
-      std::string script="test2.py";
-      std::string dir="c:\\Users\\lasso\\devel\\HapDebugger\\bin";
-      std::string params="";
-
-      hapdbg::GetInitVals(script, dir, params);
-
-      if (script.length())
-      {
-        //set the current working directory
-        if (dir.length() > 0)
-          SetCurrentDirectory(dir.c_str());
-
-        //store the command parameters
-        hapdbg::SetPythonArguments(params, script);
-
-        //execute the command line under debugger control
-        hapdbg::RunPythonScript(script.c_str());
-      }
-      else
-      {
-        printf("no python script specified");
-      }
-    }
-  }
-  // DO NOT!!! use catch(...) here, as that will catch CPU exceptions as well as
-  // C++ exceptions. Very bad.
-  catch(const char* exception)
-  {
-    //		dprintf("Exception Caught - %s\n", exception);
-    printf("Exception Caught - %s\n", exception);
-  }
-
-
-
-  //cleanup the debugger
-//  hapdbg::Uninitialize();
-
-  //cleanup python
-  //Py_Finalize();
 
 }
 

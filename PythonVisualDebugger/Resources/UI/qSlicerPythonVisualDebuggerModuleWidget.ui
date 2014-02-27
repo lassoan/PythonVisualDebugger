@@ -23,7 +23,7 @@
       <item row="0" column="1">
        <widget class="QPushButton" name="PushButton_StartServer">
         <property name="text">
-         <string>Start debugger server</string>
+         <string>test</string>
         </property>
        </widget>
       </item>

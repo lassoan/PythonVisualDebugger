@@ -45,7 +45,7 @@ public:
   vtkTypeMacro(vtkSlicerPythonVisualDebuggerLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  void StartServer();
+  void Test();
 
   // If a remote debugger wants to connect then accept the connection
   void HandleRemoteConnections();

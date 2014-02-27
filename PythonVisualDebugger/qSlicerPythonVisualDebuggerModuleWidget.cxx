@@ -77,13 +77,13 @@ void qSlicerPythonVisualDebuggerModuleWidget::setup()
   d->setupUi(this);
   this->Superclass::setup();
 
-  connect( d->PushButton_StartServer, SIGNAL( clicked() ), this, SLOT( onStartServerButtonClicked() ) );
+  connect( d->PushButton_StartServer, SIGNAL( clicked() ), this, SLOT( onTestButtonClicked() ) );
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerPythonVisualDebuggerModuleWidget::onStartServerButtonClicked()
+void qSlicerPythonVisualDebuggerModuleWidget::onTestButtonClicked()
 {
   Q_D(qSlicerPythonVisualDebuggerModuleWidget);
-  qCritical() << "qSlicerPythonVisualDebuggerModuleWidget::onStartServerButtonClicked() called"; 
-  d->logic()->StartServer(); 
+  qCritical() << "qSlicerPythonVisualDebuggerModuleWidget::onTestButtonClicked() called"; 
+  d->logic()->Test(); 
 }
