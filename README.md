@@ -1,4 +1,4 @@
 PythonVisualDebugger
 ====================
 
-Visual debugger in Python for 3D Slicer
+This module provides a visual debugger for Python in 3D Slicer.
