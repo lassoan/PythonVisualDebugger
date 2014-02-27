@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D9E14BFD-4982-4BD6-8ADC-1E827B346B94}</ProjectGuid>
+    <SccProjectName />
+    <SccAuxPath />
+    <SccLocalPath />
+    <SccProvider />
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">./debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">./release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(PYTHON_ROOT)\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)HapDebugger.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;shell32.lib;advapi32.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)hapdebugger_d.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(PYTHON_ROOT)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)hapdebugger_d.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\..\..\bin/HapDebugger.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_AFXDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <PreBuildEvent>
+      <Command>@if not exist %PYTHON_ROOT%\include\python.h echo error: Can't find $(PYTHON_ROOT)\include\python.h. Set the PYTHON_ROOT environment variable to the root of your Python install</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>$(PYTHON_ROOT)\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)HapDebugger.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <Optimization>Full</Optimization>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 /ignore:4089 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;shell32.lib;advapi32.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)HapDebugger.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(PYTHON_ROOT)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)HapDebugger.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)HapDebugger.map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\..\..\bin/HapDebugger.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_AFXDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <PreBuildEvent>
+      <Command>@if not exist %PYTHON_ROOT%\include\python.h echo error: Can't find $(PYTHON_ROOT)\include\python.h. Set the PYTHON_ROOT environment variable to the root of your Python install</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="AppOptionsMainPg.cpp" />
+    <ClCompile Include="BreakpointDlg.cpp" />
+    <ClCompile Include="BrowseSelDlg.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="ConnectSettingsDlg.cpp" />
+    <ClCompile Include="ConnectStatusBar.cpp" />
+    <ClCompile Include="DataDisplayDlg.cpp" />
+    <ClCompile Include="DbgRemote.cpp" />
+    <ClCompile Include="DbgRemoteDoc.cpp" />
+    <ClCompile Include="DbgRemoteView.cpp" />
+    <ClCompile Include="DebugOptionsPage.cpp" />
+    <ClCompile Include="DocSelectDlg.cpp" />
+    <ClCompile Include="EditorOptsPg.cpp" />
+    <ClCompile Include="ExceptionHandlerHook.cpp" />
+    <ClCompile Include="FileFindDlg.cpp" />
+    <ClCompile Include="FileGroup.cpp" />
+    <ClCompile Include="FileModifiedDlg.cpp" />
+    <ClCompile Include="FilePropDlg.cpp" />
+    <ClCompile Include="FindInProjectDlg.cpp" />
+    <ClCompile Include="GotoLineDlg.cpp" />
+    <ClCompile Include="GroupPropertiesDlg.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OptionsDlg.cpp" />
+    <ClCompile Include="PdpManager.cpp" />
+    <ClCompile Include="ProjectSettingsDlg.cpp" />
+    <ClCompile Include="ProjectViewBar.cpp" />
+    <ClCompile Include="RegistryOptionsPg.cpp" />
+    <ClCompile Include="RunOptionsDlg.cpp" />
+    <ClCompile Include="scbarg.cpp" />
+    <ClCompile Include="SourceControlInterface.cpp" />
+    <ClCompile Include="StackViewBar.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Tags.cpp" />
+    <ClCompile Include="TextFindDlg.cpp" />
+    <ClCompile Include="TextReplaceDlg.cpp" />
+    <ClCompile Include="ToolConfigDlg.cpp" />
+    <ClCompile Include="TraceViewBar.cpp" />
+    <ClCompile Include="UserCfg.cpp" />
+    <ClCompile Include="VariableViewBar.cpp" />
+    <ClCompile Include="VarListCtrl.cpp" />
+    <ClCompile Include="WatchBar.cpp" />
+    <ClCompile Include="sizecbar.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DbgRemote.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="AppOptionsMainPg.h" />
+    <ClInclude Include="BreakpointDlg.h" />
+    <ClInclude Include="BrowseSelDlg.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="ConnectSettingsDlg.h" />
+    <ClInclude Include="ConnectStatusBar.h" />
+    <ClInclude Include="DataDisplayDlg.h" />
+    <ClInclude Include="DbgRemote.h" />
+    <ClInclude Include="DbgRemoteDoc.h" />
+    <ClInclude Include="DbgRemoteView.h" />
+    <ClInclude Include="DebugOptionsPage.h" />
+    <ClInclude Include="DocSelectDlg.h" />
+    <ClInclude Include="EditorOptsPg.h" />
+    <ClInclude Include="FileFindDlg.h" />
+    <ClInclude Include="FileGroup.h" />
+    <ClInclude Include="FileModifiedDlg.h" />
+    <ClInclude Include="FilePropDlg.h" />
+    <ClInclude Include="FindInProjectDlg.h" />
+    <ClInclude Include="GotoLineDlg.h" />
+    <ClInclude Include="GroupPropertiesDlg.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="OptionsDlg.h" />
+    <ClInclude Include="PdpManager.h" />
+    <ClInclude Include="ProjectSettingsDlg.h" />
+    <ClInclude Include="ProjectViewBar.h" />
+    <ClInclude Include="RegistryOptionsPg.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RunOptionsDlg.h" />
+    <ClInclude Include="scbarg.h" />
+    <ClInclude Include="SccGeneric.h" />
+    <ClInclude Include="sizecbar.h" />
+    <ClInclude Include="SourceControlInterface.h" />
+    <ClInclude Include="StackViewBar.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="Tags.h" />
+    <ClInclude Include="TextFindDlg.h" />
+    <ClInclude Include="TextReplaceDlg.h" />
+    <ClInclude Include="ToolConfigDlg.h" />
+    <ClInclude Include="TraceViewBar.h" />
+    <ClInclude Include="UserCfg.h" />
+    <ClInclude Include="VariableViewBar.h" />
+    <ClInclude Include="VarListCtrl.h" />
+    <ClInclude Include="WatchBar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\DbgRemote.ico" />
+    <None Include="res\DbgRemote.rc2" />
+    <None Include="res\DbgRemoteDoc.ico" />
+    <None Include="res\fileimag.bmp" />
+    <None Include="res\happroj.ico" />
+    <None Include="res\icon1.ico" />
+    <None Include="res\icon2.ico" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\toolbar1.bmp" />
+    <None Include="res\toolbar_.bmp" />
+    <None Include="..\HowToBuild.txt" />
+    <None Include="..\KnownDefects.txt" />
+    <None Include="..\license.txt" />
+    <None Include="..\Readme.txt" />
+    <None Include="..\ToDo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DbgNetLib\DbgNetLib.vcxproj">
+      <Project>{6bc582d9-2fde-43e9-8b81-ce1d914f6643}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\expat\expat.vcxproj">
+      <Project>{4ed59411-2223-43ce-972d-70da1747fdaf}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\HapClient\HapClient.vcxproj">
+      <Project>{2b85718e-9ba8-4850-8cc7-0b5968c9f2bc}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\hecore\hecore.vcxproj">
+      <Project>{8a43bc9a-d4a6-44c5-98e0-5b109a62d0eb}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\scintilla\Scintilla.vcxproj">
+      <Project>{4895cb17-1e07-490d-8a74-b86755277f18}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

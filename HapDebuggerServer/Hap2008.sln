@@ -1,0 +1,54 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HapDebugger", "HapDebugger\HapDebugger.vcproj", "{D9E14BFD-4982-4BD6-8ADC-1E827B346B94}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4ED59411-2223-43CE-972D-70DA1747FDAF} = {4ED59411-2223-43CE-972D-70DA1747FDAF}
+		{4895CB17-1E07-490D-8A74-B86755277F18} = {4895CB17-1E07-490D-8A74-B86755277F18}
+		{8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB} = {8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB}
+		{6BC582D9-2FDE-43E9-8B81-CE1D914F6643} = {6BC582D9-2FDE-43E9-8B81-CE1D914F6643}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DbgNetLib", "DbgNetLib\DbgNetLib.vcproj", "{6BC582D9-2FDE-43E9-8B81-CE1D914F6643}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat", "expat\expat.vcproj", "{4ED59411-2223-43CE-972D-70DA1747FDAF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hecore", "hecore\hecore.vcproj", "{8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scintilla.vcproj", "{4895CB17-1E07-490D-8A74-B86755277F18}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C1E22714-AB3B-4C31-A1E7-8384AB88656A}"
+	ProjectSection(SolutionItems) = preProject
+		OssInclude\OssInclude.h = OssInclude\OssInclude.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9E14BFD-4982-4BD6-8ADC-1E827B346B94}.Debug|Default.ActiveCfg = Debug|Win32
+		{D9E14BFD-4982-4BD6-8ADC-1E827B346B94}.Debug|Default.Build.0 = Debug|Win32
+		{D9E14BFD-4982-4BD6-8ADC-1E827B346B94}.Release|Default.ActiveCfg = Release|Win32
+		{D9E14BFD-4982-4BD6-8ADC-1E827B346B94}.Release|Default.Build.0 = Release|Win32
+		{6BC582D9-2FDE-43E9-8B81-CE1D914F6643}.Debug|Default.ActiveCfg = Debug|Win32
+		{6BC582D9-2FDE-43E9-8B81-CE1D914F6643}.Debug|Default.Build.0 = Debug|Win32
+		{6BC582D9-2FDE-43E9-8B81-CE1D914F6643}.Release|Default.ActiveCfg = Release|Win32
+		{6BC582D9-2FDE-43E9-8B81-CE1D914F6643}.Release|Default.Build.0 = Release|Win32
+		{4ED59411-2223-43CE-972D-70DA1747FDAF}.Debug|Default.ActiveCfg = Debug|Win32
+		{4ED59411-2223-43CE-972D-70DA1747FDAF}.Debug|Default.Build.0 = Debug|Win32
+		{4ED59411-2223-43CE-972D-70DA1747FDAF}.Release|Default.ActiveCfg = Release|Win32
+		{4ED59411-2223-43CE-972D-70DA1747FDAF}.Release|Default.Build.0 = Release|Win32
+		{8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB}.Debug|Default.ActiveCfg = Debug|Win32
+		{8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB}.Debug|Default.Build.0 = Debug|Win32
+		{8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB}.Release|Default.ActiveCfg = Release|Win32
+		{8A43BC9A-D4A6-44C5-98E0-5B109A62D0EB}.Release|Default.Build.0 = Release|Win32
+		{4895CB17-1E07-490D-8A74-B86755277F18}.Debug|Default.ActiveCfg = Debug|Win32
+		{4895CB17-1E07-490D-8A74-B86755277F18}.Debug|Default.Build.0 = Debug|Win32
+		{4895CB17-1E07-490D-8A74-B86755277F18}.Release|Default.ActiveCfg = Release|Win32
+		{4895CB17-1E07-490D-8A74-B86755277F18}.Release|Default.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
